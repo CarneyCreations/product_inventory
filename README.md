@@ -7,17 +7,11 @@ A menu is displayed which gives a user the option to; add a new product (includi
 • This project is a useful tool for any companies that need to keep track of their stock. 
 
 # How to install the file
-• To view this file, first you need to download and install the latest version of Python and an IDE (VSCode or PyCharm will work) to use it. https://code.visualstudio.com/download or https://www.jetbrains.com/pycharm/download/#section=mac
+• To view this file, first you need to download and install the latest version of [Python](https://www.python.org/downloads/) and an IDE ([VSCode](https://code.visualstudio.com/download) or [PyCharm](https://www.jetbrains.com/pycharm/download/#section=mac) will work) to use it.
 
-• Next click on the <>code button and at the bottom of the dropdown menu select Download ZIP as in the image below.
+• You can download my files for this program by clicking on [Download ZIP](https://github.com/CarneyCreations/product_inventory/archive/refs/heads/main.zip).
 
 • Locate the ZIP file on your computer and unzip it.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/CarneyCreations/task_manager/blob/master/Download_ZIP.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://github.com/CarneyCreations/task_manager/blob/master/Download_ZIP.png">
-  <img alt="Shows the user where to access the download link." src="https://github.com/CarneyCreations/task_manager/blob/master/Download_ZIP.png">
-</picture>
 
 # Using the file
 • Open up the inventory.py program and run the program to reach the main menu. 
