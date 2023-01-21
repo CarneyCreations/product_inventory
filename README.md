@@ -24,5 +24,5 @@ A menu is displayed which gives a user the option to; add a new product (includi
 
 • From here you can navigate through the program which is self explanitory.
 
-Credits
+# Credits
 Joshua Carney (CarneyCreations)
