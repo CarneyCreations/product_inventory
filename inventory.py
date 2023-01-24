@@ -10,6 +10,12 @@ class Shoe:
         self.cost = cost
         self.quantity = quantity
 
+    def get_code(self):
+        return self.code
+
+    def get_product(self):
+        return self.product
+
     def get_cost(self):
         return self.cost
 
@@ -31,37 +37,46 @@ class Shoe:
         return output
 
 
-shoe_list = []
-
-
 # #==========Functions outside the class==============
 def read_shoes_data():
     """ Takes data from "inventory.txt" and converts each line into a new object, which then gets appended to
     the shoe_list.
     :return: (list) Contains all data from inventory.txt, ready to print and formatted for a table.
     """
+    # shoe_list = []
+    # read_object = None
     table = []
+    # shoes = None
     try:
         read_file = open("inventory.txt", "r", encoding="UTF-8")
         header = read_file.readline()         # Removes header for objects.
         inventory = read_file.readlines()
         read_file.close()
-        header_split = header.split(",")
-        table = [header_split]
-        for read in inventory:
-            shoes = read.split(",")
-            table.append(shoes)
-            read_object = Shoe(shoes[0], shoes[1], shoes[2], shoes[3], shoes[4])
-            shoe_list.append(read_object)
 
     except FileNotFoundError:
         print(f"\n{red}The inventory.txt file could not be found."
               f"\nPlease check that it hasn't been renamed or relocated before trying again.{end}")
+
+    if len(inventory) > 0:
+        header_split = header.split(",")
+        table = [header_split]
+
+        for read in inventory:
+            shoes = read.split(",")
+            table.append(shoes)                 # Lists of shoes.
+            read_object = Shoe(shoes[0], shoes[1], shoes[2], shoes[3], shoes[4])
+            shoe_list.append(read_object)       # Shoe objects list.
+        print(f"{green}The system has been updated with a full inventory of all products.{end}")
+    else:
+        print(f"{yellow}The inventory.txt file exists but contains no data.{end}\n"
+              f"Go to Add Product to update the inventory")
+    # print(table)
     return table
 
 
 def add_product():
     """ This method creates a Shoe object by taking in user inputs. """
+    read_shoes_data()
     code = None
     cost = None
     in_stock = None
@@ -87,8 +102,8 @@ def add_product():
     write_list = ["\n" + country + ",", "SKU" + str(code) + ",", product_name + ",", str(cost) + ",", str(in_stock)]
     print(f"{green}{product_name}s have been added to the inventory.{end}")
 
-    read_shoes_data()
     shoe_list.append(new_object)
+
     f = open("inventory.txt", "a", encoding="UTF-8")
     for each in write_list:
         f.write(each)
@@ -100,12 +115,11 @@ def view_all():
     table = read_shoes_data()
     header = table[0]
     table.pop(0)
-    print(header)
     for each in table:
         each[3] = "£" + each[3]
     table.insert(0, header)
-    print(table)
     print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
+    print("\n")     #test
 
 
 def stock_quantities(min_max=min):
@@ -114,8 +128,8 @@ def stock_quantities(min_max=min):
     """
     read_shoes_data()
     quantities_list = []
-    for shoe in shoe_list:
-        quantities_list.append(int(shoe.get_quantity()))
+    for shoe in shoe_list:          # Table? converts to string
+        quantities_list.append(int(shoe.get_quantity()))      # get_quant?
     stock_quantity = min_max(quantities_list)
     return stock_quantity
 
@@ -124,40 +138,80 @@ def re_stock():
     """ Determines the product with the lowest stock and asks how many pairs should be purchased.
     The inventory is then updated with the new quantity.
     """
+    table = read_shoes_data()
     lowest_quantity = stock_quantities(min)
     additional_stock = 0
 
-    for shoe in shoe_list:
+    for index, shoe in enumerate(shoe_list, start=1):
         if lowest_quantity == int(shoe.get_quantity()):
             print(shoe)
 
             while True:
                 try:
-                    additional_stock = int(input(f"How many pairs of {shoe.product}s would you like to buy: "))
+                    additional_stock = int(input(f"How many pairs of {shoe.get_product()}s would you like to buy: "))
+                    break
                 except ValueError:
                     print(f"{red}Please enter the amount of pairs you would like to add as a whole number.{end}\n")
                     continue
-                break
+                # break
 
             # Combines the current product quantity and the additional_stock input.
-            shoe.increase_quantity(shoe.get_quantity(), additional_stock)
-            restock_cost = additional_stock * int(shoe.cost)
+            new_quantity = shoe.increase_quantity(shoe.get_quantity(), additional_stock)
+            restocked = index
+
+            restock_cost = additional_stock * int(shoe.get_cost())
             if 0 < additional_stock:
-                print(f"{green}Your order of {additional_stock} pairs of {shoe.product}s has been dispatched and will "
-                      f"be shipped to your depot.\n"
+                print(f"{green}Your order of {additional_stock} pairs of {shoe.get_product()}s has been dispatched and "
+                      f"will be shipped to your depot.\n"
                       f"An invoice of £{restock_cost} will be sent to you.{end}\n\n"
                       f"This is an updated view of the products stock count.")
                 print(shoe)
             else:
                 print(f"{red}No pairs were ordered, we look forward to your next order.{end}")
+            break
+
+
+
+    table[restocked][4] = new_quantity
+    print(table)
+    inventory_file = open("inventory.txt", "w+", encoding="UTF-8")
+
+    p = []
+    # for each in table:
+    #     join2 = ",".join(str(each))
+    #     p.append(join2)
+    # join2 = " ".join(table)
+    # print(join2)
+    # print(p)
+
+    for each in table:
+        z4 = ",".join(str(each))
+        for a in each:
+            print(z4)
+            print(a)
+            z3 = ",".join(str(a))
+            inventory_file.write(str(a))
+
+
+        # join2 = ",".join(str(each))
+        # p.append(join2)
+    # join2 = " ".join(table)
+    # print(join2)
+    # print(p)
+    # print(z3)
+        # tab = str(each)
+
+
+    # inventory_file.write(str(tab))
+    print(z3)
 
 
 def search_shoe():
     """ Input an SKU code for a shoe and this method will return the object if it is inside "shoe_list"."""
-    read_shoes_data()
+    # read_shoes_data()
     shoe_id = input("Which SKU code would you like to search for: ").upper()
     for shoe in shoe_list:
-        if shoe.code == shoe_id:
+        if shoe.get_code() == shoe_id:
             return shoe
 
     return f"{red}Please enter a valid product SKU code to search the system.{end}"
@@ -171,23 +225,25 @@ def highest_qty():
         if highest_quantity == int(shoe.get_quantity()):
             print(shoe)
             print(f"{red}The {shoe.product}s are overstocked and will now be placed on sale.{end}")
+            break
 
 
 def product_stock_cost():
     """ Calculates the total cost of each product in stock and outputs the data in a table format. """
-    read_shoes_data()
+    # read_shoes_data()
     table = [["Product", "Individual Cost", "Quantity", "Total Value"]]
 
     for shoe in shoe_list:
         total_value_list = []
-        cost = "£" + shoe.cost
-        total = int(shoe.cost) * int(shoe.quantity)
+        cost = "£" + (shoe.get_cost())
+        total = int(shoe.get_cost()) * int(shoe.get_quantity())
         cost_total = "£" + str(total)
-        total_value_list.append(shoe.product)
+        total_value_list.append(shoe.get_product())
         total_value_list.append(cost)
-        total_value_list.append(shoe.quantity)
+        total_value_list.append(shoe.get_quantity())
         total_value_list.append(cost_total)
         table.append(total_value_list)
+
     print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
 
 
@@ -202,10 +258,13 @@ end = '\033[0m'
 bold = '\033[1m'
 underline = '\033[4m'
 
+shoe_list = []
+# read_inventory = read_shoes_data()
+
 # #==========Main Menu=============
 while True:
     menu = input(f"\n\t {red}{underline}Inventory Menu{end}\n"
-                 f"\t {blue}1:  {cyan}Read File\n"
+                 # f"\t {blue}1:  {cyan}Read File\n"
                  f"\t {blue}2:  {cyan}Add Product\n"
                  f"\t {blue}3:  {cyan}View All Products\n"
                  f"\t {blue}4:  {cyan}Restock Inventory\n"
@@ -213,11 +272,10 @@ while True:
                  f"\t {blue}6:  {cyan}Search Product\n"
                  f"\t {blue}7:  {cyan}Product Stock Cost{end}\n"
                  ": ")
-
+    print("\n")
     if menu == "1":
         print("1: Read File")
         read_shoes_data()
-        print(f"{green}The system has been updated with a full inventory of all products.{end}")
 
     elif menu == "2":
         print("2: Add Product")
@@ -242,6 +300,7 @@ while True:
     elif menu == "7":
         print("7: Product Stock Cost")
         product_stock_cost()
+        # shoe_list = []
 
     else:
         print(f"{red}Please enter the number relevant to the menu option.{end}")
