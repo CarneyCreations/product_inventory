@@ -29,6 +29,15 @@ A program that records the inventory of a shoe shop and stores/reads the data fr
 
 • Locate the ZIP file on your computer and unzip it.
 
+# Modules
+• Before using the file you will have to install the tabulate module.
+
+• Head to your terminal and type/copy and paste the following line:
+
+pip install tabulate
+
+If this does not work, check out this [install guide](https://blog.finxter.com/how-to-install-tabulate-in-python/) for more information.
+
 # Using the file
 • Open up the inventory.py program and run the program to reach the main menu. 
 
